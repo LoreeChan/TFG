@@ -1,0 +1,6 @@
+
+	SELECT expand(DISTINCT(in('tieneHistoricoDe'))) FROM (
+		SELECT expand(out('Comprende')) FROM (
+			SELECT expand(in('pertenece').in('asociadaA')) FROM Servicio WHERE id='26'
+		) WHERE (inicio between "2019-03-11 00:00:00" and "2019-03-18 00:00:00") OR (fin between "2019-03-11 00:00:00" and "2019-03-18 00:00:00") OR (inicio <= date('2019-03-11 00:00:00') AND (fin IS NULL OR fin >= date('2019-03-18 00:00:00')))
+	) WHERE descripcion.toLowerCase()='Varicela'.toLowerCase() and out('esDeTipo').@class="TipoInfeccion"

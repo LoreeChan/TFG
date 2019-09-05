@@ -1,0 +1,25 @@
+
+	SELECT expand(in('tieneHistoricoDe')) 
+	FROM EventoPuntual 
+	WHERE (
+		descripcion.toLowerCase()='Varicela'.toLowerCase() 
+		AND out('esDeTipo').@class='TipoInfeccion' 
+		AND in('tieneHistoricoDe').id IN ['3','11','12','22']
+		AND fecha IN (
+			SELECT min(fecha) FROM (
+				SELECT expand(out('tieneHistoricoDe')) FROM Paciente WHERE id IN ['3','11','12','22']
+			) WHERE (
+				@class='EventoPuntual' 
+				AND descripcion='Varicela' 
+				AND out('esDeTipo').@class='TipoInfeccion'
+				AND ((fecha between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+					OR 
+					((first(in('comprende')).inicio between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+						OR (first(in('comprende')).fin between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+						OR (first(in('comprende')).inicio <= '2019-03-16 00:00:00' 
+							AND (first(in('comprende')).fin IS NULL 
+							OR first(in('comprende')).fin >= '2019-03-23 00:00:00')))
+				)		
+			)
+		) 
+	)

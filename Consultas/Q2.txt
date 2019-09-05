@@ -1,0 +1,45 @@
+
+  SELECT expand(DISTINCT(in('tieneHistoricoDe'))) FROM (
+	SELECT expand(in('realizadoEn')) FROM (
+	  TRAVERSE out('realizadoEn'), both('situadoEn', 'alberga') 
+	  FROM (
+		SELECT expand(in('comprende')) FROM (
+		  SELECT expand(out('tieneHistoricoDe')) FROM Paciente WHERE id='3'
+		) WHERE (
+			  @class='EventoPuntual'
+			  AND descripcion.toLowerCase()='Varicela'.toLowerCase()
+			  AND out('esDeTipo').@Class='TipoInfeccion'
+			  AND ((fecha between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+			 OR 
+			 ((first(in('comprende')).inicio between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+	  OR (first(in('comprende')).fin between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+	  OR (first(in('comprende')).inicio <= '2019-03-16 00:00:00' 
+		  AND (first(in('comprende')).fin IS NULL 
+		OR first(in('comprende')).fin >= '2019-03-23 00:00:00')))
+	  )						   
+		)
+	  ) 
+	  WHILE ((@class NOT IN ['Zona', 'Area', 'Bloque', 'Unidad', 'Planta'] 
+			  OR (@class='Zona' AND $depth IN [4, 5, 6]) 
+			  OR (@class='Area' AND $depth IN [4, 6]))  
+			 AND ($depth<=9)
+	  )
+	) WHERE @class instanceOf 'Aparato'
+  ) WHERE (
+	   (@class instanceOf 'EventoIntervalo')
+	   AND ((inicio between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+		OR (fin between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') 
+		OR (inicio <= '2019-03-16 00:00:00' AND (fin IS NULL OR fin >= '2019-03-23 00:00:00'))) 
+	   AND out('comprende') CONTAINS (@rid IN (SELECT FROM EventoPuntual 
+												WHERE (descripcion.toLowerCase()='Varicela'.toLowerCase() 
+														AND out('esDeTipo').@Class='TipoInfeccion')
+												)
+									)  
+			)
+			
+			
+	// Una Linea
+	SELECT expand(DISTINCT(in('tieneHistoricoDe'))) FROM (SELECT expand(in('realizadoEn')) FROM (TRAVERSE out('realizadoEn'), both('situadoEn', 'alberga') FROM (SELECT FROM (SELECT expand(out('tieneHistoricoDe')) FROM Paciente WHERE id='3') WHERE (@class='EventoPuntual' AND descripcion='Varicela' AND out('esDeTipo').@Class='TipoInfeccion' AND ((fecha between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') OR ((first(in('comprende')).inicio between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') OR (first(in('comprende')).fin between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') OR (first(in('comprende')).inicio <= '2019-03-16 00:00:00' AND (first(in('comprende')).fin IS NULL OR first(in('comprende')).fin >= '2019-03-23 00:00:00')))))) WHILE ((@class NOT IN ['Zona', 'Area', 'Bloque', 'Unidad', 'Planta'] OR (@class='Zona' AND $depth IN [4, 5, 6]) OR (@class='Area' AND $depth IN [4, 6])) AND ($depth<=9))) WHERE @class instanceOf 'Aparato') WHERE ((@class instanceOf 'EventoIntervalo') AND ((inicio between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') OR (fin between '2019-03-16 00:00:00' and '2019-03-23 00:00:00') OR (inicio <= '2019-03-16 00:00:00' AND (fin IS NULL OR fin >= '2019-03-23 00:00:00'))) AND out('comprende') CONTAINS (@rid IN (SELECT FROM EventoPuntual WHERE (descripcion='Varicela' AND out('esDeTipo').@Class='TipoInfeccion'))))
+	
+
+	

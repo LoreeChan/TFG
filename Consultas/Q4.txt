@@ -1,0 +1,25 @@
+
+	SELECT expand(DISTINCT(in('tieneHistoricoDe'))) FROM (
+		TRAVERSE out('tieneHistoricoDe'), both('situadoEn', 'alberga', 'realizadoEn')
+		FROM (
+			SELECT FROM Paciente WHERE id IN [2, 11]
+		) 
+		WHILE (
+			(
+			(@class NOT IN ['Zona', 'Area',  'Bloque', 'Unidad', 'Planta'] AND NOT (@this instanceof 'Evento')) 
+			OR (@class='Zona' AND $depth IN [5, 6, 7])  
+			OR (@class='Area' AND $depth IN [5, 7])  
+			OR (@class='EventoPuntual'  
+				 AND (
+					(fecha between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy'))  
+					OR (
+						(first(in('comprende').inicio) between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) 
+						OR (first(in('comprende').fin) between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) 
+						OR (first(in('comprende').inicio) <= date('13-03-2019', 'dd-MM-yyyy')  AND  (first(in('comprende').fin) IS NULL OR first(in('comprende').fin) >= date('23-03-2019', 'dd-MM-yyyy')))
+					   )
+					 )) 
+			OR ((@this instanceOf 'EventoIntervalo')  AND  ((inicio between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) OR (fin between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) OR (inicio <= date('13-03-2019', 'dd-MM-yyyy')  AND  (fin IS NULL OR fin >= date('23-03-2019', 'dd-MM-yyyy')))))
+			) 
+			AND  ($depth<=11)
+		)
+	)

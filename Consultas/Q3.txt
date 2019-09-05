@@ -1,0 +1,43 @@
+
+	Q3 (1):
+	TRAVERSE out('esDeTipo', 'realizadoEn', 'pertenece', 'asociadaA', 'situadoEn'), in('atiende', 'alberga') FROM (
+		SELECT FROM (
+			SELECT expand(set(out('tieneHistoricoDe'), @rid)) FROM Paciente WHERE id IN [2, 11, 3]
+		) WHERE ((@Class='Paciente') 
+			OR (@class='EventoPuntual'  
+				AND (
+				(fecha between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy'))  
+				OR (
+					(first(in('comprende').inicio) between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) 
+					OR (first(in('comprende').fin) between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) 
+					OR (first(in('comprende').inicio) <= date('13-03-2019', 'dd-MM-yyyy')  AND  (first(in('comprende').fin) IS NULL OR first(in('comprende').fin) >= date('23-03-2019', 'dd-MM-yyyy')))
+				   )
+				 )
+			) OR ((@this instanceOf 'EventoIntervalo')  AND  ((inicio between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) OR (fin between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) OR (inicio <= date('13-03-2019', 'dd-MM-yyyy')  AND  (fin IS NULL OR fin >= date('23-03-2019', 'dd-MM-yyyy')))))) 
+	) WHILE (
+		(@class NOT IN ['Edificio', 'Zona']  
+			OR  (@class='Zona' AND $depth IN [4, 5])
+		) AND $depth <= 6
+	)
+	
+	
+	Q3 (2):
+	TRAVERSE out('esDeTipo', 'realizadoEn', 'pertenece', 'asociadaA', 'situadoEn'), in('atiende', 'alberga') FROM (
+		SELECT FROM (
+			SELECT expand(set(out('tieneHistoricoDe'), @rid)) FROM Paciente WHERE id IN [2, 11, 3, 1]
+		) WHERE ((@Class='Paciente') 
+			OR (@class='EventoPuntual'  
+				AND (
+				(fecha between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy'))  
+				OR (
+					(first(in('comprende').inicio) between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) 
+					OR (first(in('comprende').fin) between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) 
+					OR (first(in('comprende').inicio) <= date('13-03-2019', 'dd-MM-yyyy')  AND  (first(in('comprende').fin) IS NULL OR first(in('comprende').fin) >= date('23-03-2019', 'dd-MM-yyyy')))
+				   )
+				 )
+			) OR ((@this instanceOf 'EventoIntervalo')  AND  ((inicio between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) OR (fin between date('13-03-2019', 'dd-MM-yyyy') and date('23-03-2019', 'dd-MM-yyyy')) OR (inicio <= date('13-03-2019', 'dd-MM-yyyy')  AND  (fin IS NULL OR fin >= date('23-03-2019', 'dd-MM-yyyy')))))) 
+	) WHILE (
+		(@class NOT IN ['Edificio', 'Zona']  
+			OR  (@class='Zona' AND $depth IN [4, 5])
+		) AND $depth <= 6
+	)
