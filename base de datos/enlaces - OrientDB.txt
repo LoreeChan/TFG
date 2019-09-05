@@ -1,0 +1,6 @@
+
+	Enlace directo al archivo comprimido de la versión  3.0.17:
+		https://drive.google.com/file/d/1-UEi9IbO5L9XxGKX6Dni40mMmeKk6LO7/view?usp=sharing
+		
+	Enlace a la página de OrientDB que permite descargar cualquier versión anterior:
+		https://orientdb.com/download-previous/
